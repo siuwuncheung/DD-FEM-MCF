@@ -9,30 +9,9 @@ import matplotlib.pyplot as plt
 def get_args():
     parser = argparse.ArgumentParser(description="Problem Setting and ROM Parameters")
 
+    # Metadata
     parser.add_argument("--verbosity", type=int, default=1, help="Verbosity (Silent/Default/Debug)")
     parser.add_argument("--root_dir", type=str, default="local_basis", help="Root directory of sampling")
-
-    # Problem setting
-    parser.add_argument("--medium_type", type=str, default="magnetic_island", 
-                        choices=["constant_field", "linear_model", "single_null", "double_null", "magnetic_island"])
-    parser.add_argument("--test_anisotropy_order", type=int, default=6)
-
-    # Fine mesh
-    parser.add_argument("--n_FOM_x", type=int, default=256)
-    parser.add_argument("--n_FOM_y", type=int, help="Defaults to n_FOM_x")
-
-    # Coarse mesh
-    parser.add_argument("--Nx", type=int, default=16)
-    parser.add_argument("--Ny", type=int, help="Defaults to Nx")
-
-    # FOM
-    parser.add_argument("--solve_FOM", type=int, default=1, help="-1: skip, 0: load, 1: solve")
-    parser.add_argument("--plot_solution_FOM", type=int, default=1)
-
-    # ROM
-    parser.add_argument("--solve_ROM", type=int, default=1, help="0: load, 1: solve")
-    parser.add_argument("--plot_solution_rom", type=int, default=1)
-    parser.add_argument("--num_loc_basis", type=int, default=5)
 
     # Sampling
     parser.add_argument("--num_realizations", type=int, default=1)
@@ -46,12 +25,31 @@ def get_args():
     parser.add_argument("--range_mag_grad_x", type=float, default=0.0)
     parser.add_argument("--range_mag_grad_y", type=float, default=0.0)
 
+    # Offline
+    parser.add_argument("--nx", type=int, default=16)
+    parser.add_argument("--ny", type=int, help="Defaults to nx")
+    parser.add_argument("--multiply_POU_offline", action="store_true")
+
     # Online
-    parser.add_argument("--multiply_POU", type=int, default=1, help="0: no POU multiplication, 1: bilinear POU, 2: multiscale POU")
+    parser.add_argument("--medium_type", type=str, default="magnetic_island", 
+                        choices=["constant_field", "linear_model", "single_null", "double_null", "magnetic_island"])
+    parser.add_argument("--test_anisotropy_order", type=int, default=6)
+    parser.add_argument("--n_FOM_x", type=int, default=256)
+    parser.add_argument("--n_FOM_y", type=int, help="Defaults to n_FOM_x")
+    parser.add_argument("--solve_FOM", type=int, default=1, help="-1: skip, 0: load, 1: solve")
+    parser.add_argument("--plot_solution_FOM", type=int, default=1)
+    parser.add_argument("--Nx", type=int, default=16)
+    parser.add_argument("--Ny", type=int, help="Defaults to Nx")
+    parser.add_argument("--num_loc_basis", type=int, default=5)
+    parser.add_argument("--multiply_POU", type=int, default=1, help="0: no POU multiplication, 1: bilinear POU, 2: harmonic_extension POU")
     parser.add_argument("--corr_patch_size", type=int, default=0, help="Source correction patch size")
+    parser.add_argument("--solve_ROM", type=int, default=1, help="0: load, 1: solve")
+    parser.add_argument("--plot_solution_rom", type=int, default=1)
 
     args = parser.parse_args()
 
+    if args.ny is None:
+        args.ny = args.nx
     if args.n_FOM_y is None:
         args.n_FOM_y = args.n_FOM_x
     if args.Ny is None:

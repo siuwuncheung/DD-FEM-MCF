@@ -282,11 +282,19 @@ if corr_patch_size > 0:
 
 ROM_RHS = glob_basis_DOF.T @ FOM_RHS
 
-ROM_U, time_factor, time_ROM = ROM_solution(ROM_DA, ROM_RHS, basis_dir, solve_ROM)
-ROM_U_FOM = glob_basis_DOF @ ROM_U
-if corr_patch_size > 0:
-    ROM_U_FOM = ROM_U_FOM + u_corr
-np.savez(f'{run_dir}/ROM_solution.npz', ROM_U=ROM_U, ROM_U_FOM=ROM_U_FOM, time_ROM=time_ROM)
+if solve_ROM == 0:
+    ROM_data = np.load(f'{run_dir}/ROM_solution.npz')
+    ROM_U = ROM_data['ROM_U']
+    ROM_U_FOM = ROM_data['ROM_U_FOM']
+    time_factor = ROM_data['time_factor']
+    time_ROM = ROM_data['time_ROM']
+    FOM_data.close() 
+else:
+    ROM_U, time_factor, time_ROM = ROM_solution(ROM_DA, ROM_RHS, basis_dir, solve_ROM)
+    ROM_U_FOM = glob_basis_DOF @ ROM_U
+    if corr_patch_size > 0:
+        ROM_U_FOM = ROM_U_FOM + u_corr
+    np.savez(f'{run_dir}/ROM_solution.npz', ROM_U=ROM_U, ROM_U_FOM=ROM_U_FOM, time_factor=time_factor, time_ROM=time_ROM)
 
 ROM_residual = np.linalg.norm(ROM_RHS - ROM_DA @ ROM_U)
 if verbosity >= 1:
