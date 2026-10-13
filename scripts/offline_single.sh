@@ -29,4 +29,3 @@ python3 offline.py \
     --mean_curv_y_pi "$cy" \
     --mean_mag_grad_x "$gx" \
     --mean_mag_grad_y "$gy" \
-    #--multiply_GFEM_local_basis \

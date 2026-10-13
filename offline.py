@@ -51,7 +51,7 @@ range_curv_y_pi = params.range_curv_y_pi
 range_mag_grad_x = params.range_mag_grad_x
 range_mag_grad_y = params.range_mag_grad_y
 
-multiply_GFEM_local_basis = params.multiply_GFEM_local_basis
+multiply_POU_offline = params.multiply_POU_offline
 
 root_dir = params.root_dir
 
@@ -113,7 +113,7 @@ bx_loc_sp, by_loc_sp, a_loc_sp = compute_local_anisotropic_tensor(
     field_type="Spectral",
     save_dir=samp_dir
 )
-loc_basis = tensor_eigenproblem_2d(a_loc_sp, nx, ny, loc_snapshots, multiply_GFEM_local_basis)
+loc_basis = tensor_eigenproblem_2d(a_loc_sp, nx, ny, loc_snapshots, multiply_POU_offline)
 np.save(f'{samp_dir}/loc_basis.npy', loc_basis)
 
 for k in range(loc_basis.shape[1]):
